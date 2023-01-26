@@ -1,0 +1,25 @@
+.wrapper {
+    display: flex;
+    cursor: pointer;
+    width: 10%;
+}
+
+.wrapperHome {
+    display: flex;
+    cursor: pointer;
+}
+
+.wrapper img {
+    width: 40px;
+    height: 40px;
+    transition: transform .3s;
+}
+
+.wrapperHome img {
+    width: 100px;
+    height: 100px;
+}
+
+.wrapper img:hover {
+    transform: scale(1.5);
+}
