@@ -1,5 +1,12 @@
+import { Menu } from "../components/Menu";
+
 export function Airports() {
     return (
-        <h1>Airports</h1>
+        <>
+            <Menu page='airports' />
+            <main>
+                <h1>Airports</h1>
+            </main>
+        </>
     )
 }
