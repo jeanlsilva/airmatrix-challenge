@@ -1,0 +1,14 @@
+.resultsPerPage {
+    display: flex;
+}
+
+.pagination {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.active {
+    color: red;
+    font-weight: bold;
+}
