@@ -1,0 +1,12 @@
+.pagination {
+    display: flex;
+}
+
+.pagination span {
+    margin: 0 3px;
+}
+
+.active {
+    color: red;
+    font-weight: bold;
+}
