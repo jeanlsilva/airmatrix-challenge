@@ -9,6 +9,11 @@
     --purple-500: #7e6be1;
     
     --blue-500: #1963cc;
+
+    --green-900: #0c7800;
+
+    --red-900: #a10202;
+
 }
 
 * {
@@ -32,4 +37,5 @@ body, input, textarea, button {
 main {
     max-width: 1280px;
     margin: 0 auto;
+    padding: 20px;
 }

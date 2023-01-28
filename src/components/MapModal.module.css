@@ -1,0 +1,14 @@
+.top {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.top >svg {
+    cursor: pointer;
+    transition: color .3s;
+}
+
+.top >svg:hover {
+    color: var(--blue-500);
+}

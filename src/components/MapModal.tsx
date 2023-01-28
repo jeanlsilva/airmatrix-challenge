@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import Modal from 'react-modal';
+import Map, { Marker } from 'react-map-gl';
+import { ArrowArcLeft } from 'phosphor-react';
+import { DataProps } from './DataTable';
+import styles from './MapModal.module.css';
 
 interface ModalProps {
     isOpen: boolean;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    coordinates: number[] | number[][][];
+    data?: DataProps;
     type: 'airports' | 'stadiums' | 'special';
 }
 
@@ -11,7 +16,7 @@ interface ModalProps {
 // Stadiums: coordinates: { number [] }
 // Airports: coordinates: { number [] }
 
-const customStyles = {
+const customStyles: Modal.Styles = {
     content: {
       top: '50%',
       left: '50%',
@@ -19,27 +24,58 @@ const customStyles = {
       bottom: 'auto',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
-      background: 'var(--gray-500)'
+      background: 'var(--gray-500)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
     },
-  };
+};
 
-export function MapModal({ isOpen, setIsOpen, coordinates, type }: ModalProps) {
+const MAPBOX_TOKEN = 'pk.eyJ1IjoiamVhbmxzaWx2YSIsImEiOiJjbGRkNzFhZXYwMHI1M3Bud2g2MXZmYzNnIn0.Nf8ztLzXZ4t60QgMzeW1zQ';
+
+export function MapModal({ isOpen, setIsOpen, data, type }: ModalProps) {
+    const [viewPort, setViewPort] = useState();
+
     return (
-        <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles}>
-            <h1>{type}</h1>
-            {type === 'special' && Array.isArray(coordinates[0]) ? (
-                coordinates[0].map((c) => (
-                    <>
-                        <p>X Coordinate: { c[0] }</p>
-                        <p>Y Coordinate: { c[1] }</p>
-                    </>
-                ))
-            ) : (
-                <>
-                    <p>X Coordinate: { coordinates[0] }</p>
-                    <p>Y Coordinate: { coordinates[1] }</p>
-                </>
-            )}
-        </Modal>
+        data ? (
+            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
+                <div className={styles.top}>
+                    <ArrowArcLeft onClick={() => setIsOpen(false)} size={30} />
+                    <h1>{data.properties.NAME}</h1>
+                </div>
+                {type === 'special' && Array.isArray(data.geometry.coordinates[0]) ? (
+                    data.geometry.coordinates[0].map((c) => (
+                        <>
+                            <Map
+                                mapboxAccessToken={MAPBOX_TOKEN}
+                                initialViewState={{
+                                    longitude: c[0],
+                                    latitude: c[1],
+                                    zoom: 5
+                                }}
+                            >
+                            </Map>
+                        </>
+                    ))
+                ) : (
+                    <Map
+                        mapboxAccessToken={MAPBOX_TOKEN}
+                        initialViewState={{
+                            longitude: data.geometry.coordinates[0],
+                            latitude: data.geometry.coordinates[1],
+                            zoom: 12
+                        }}
+                        style={{ width: 600, height: '75vh', marginTop: 10 }}
+                        mapStyle='mapbox://styles/mapbox/streets-v9'
+                    >
+                        <Marker 
+                            longitude={data.geometry.coordinates[0]}
+                            latitude={data.geometry.coordinates[1]}
+                            color={type === 'airports' ? 'blue' : 'green'}
+                        />
+                    </Map>
+                )}
+            </Modal>
+        ) : <></>
     )
 }

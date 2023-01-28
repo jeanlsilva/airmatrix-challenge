@@ -1,12 +1,31 @@
+.wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
 .pagination {
     display: flex;
 }
 
 .pagination span {
     margin: 0 3px;
+    cursor: pointer;
+}
+
+.pagination span:hover {
+    text-decoration: underline;
 }
 
 .active {
-    color: red;
+    color: var(--blue-500);
     font-weight: bold;
+}
+
+.resultsPerPage {
+    display: flex;
+}
+
+.resultsPerPage select {
+    margin: 0 5px;
 }

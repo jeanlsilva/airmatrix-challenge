@@ -1,0 +1,49 @@
+.dataTable {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.dataTable table {
+    width: 100%;
+    margin: 20px 0;
+    background: var(--gray-300);
+    color: var(--gray-900);
+    border-collapse: collapse;
+}
+
+.dataTable td {
+    border: .3px solid var(--gray-500);
+    height: 40px;
+    text-align: center;
+}
+
+.dataTable table thead {
+    background-color: var(--gray-900);
+    font-weight: bold;
+    color: var(--gray-100);
+}
+
+.dataTable table tbody tr:nth-child(even) {
+    background-color: var(--gray-100);
+}
+
+.dataTable tbody td button {
+    background: transparent;
+    border: 0;
+    color: var(--gray-900);
+    cursor: pointer;
+    transition: color .3s;
+}
+
+.dataTable tbody td button:hover {
+    color: var(--blue-500);
+}
+
+.statusRed {
+    color: var(--red-900);
+}
+
+.statusGreen {
+    color: var(--green-900);
+}

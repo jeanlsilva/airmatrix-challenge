@@ -1,31 +1,14 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { MapTrifold } from 'phosphor-react';
 import { Menu } from '../components/Menu';
 import { Pagination } from '../components/Pagination';
 import { getData } from '../services/getData';
-import styles from './Stadiums.module.css';
 import { MapModal } from '../components/MapModal';
-
-interface Geometry {
-    type: string;
-    coordinates: number[];
-}
-
-interface DataProps {
-    properties: {
-        OBJECTID: number;
-        NAME: string;
-        STATUS_CODE: string;
-        CITY: string;
-        STATE: string;
-    };
-    geometry: Geometry;
-}
+import { DataProps, DataTable } from '../components/DataTable';
 
 export function Stadiums() {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedData, setSelectedData] = useState<Geometry | undefined>(undefined);
+    const [selectedData, setSelectedData] = useState<DataProps | undefined>(undefined);
     const [list, setList] = useState<DataProps[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(50);
@@ -36,7 +19,8 @@ export function Stadiums() {
             console.log(data);
             setList(data.features);
         },
-        onError: (error) => console.log(error)
+        onError: (error) => console.log(error),
+        cacheTime: 60000
     });
 
     function handleChangeResultsPerPage(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -59,46 +43,16 @@ export function Stadiums() {
                         <p>Unable to load results</p>
                     ) : list ? (
                         <>
-                            <div className={styles.resultsPerPage}>
-                                Show
-                                <select onChange={handleChangeResultsPerPage} value={resultsPerPage}>
-                                    <option value='10'>10</option>
-                                    <option value='50'>50</option>
-                                    <option value='100'>100</option>
-                                </select>
-                                results per page
-                            </div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <td>ID</td>
-                                        <td>Name</td>
-                                        <td>Status</td>
-                                        <td>Location</td>
-                                        <td>View Details</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {(list.slice((resultsPerPage * (currentPage - 1)), (resultsPerPage * (currentPage - 1)) + resultsPerPage)).map(item => (
-                                        <tr>
-                                            <td>{item.properties.OBJECTID}</td>
-                                            <td>{item.properties.NAME}</td>
-                                            <td>{item.properties.STATUS_CODE}</td>
-                                            <td>{`${item.properties.CITY}, ${item.properties.STATE}`}</td>
-                                            <td>
-                                                <button onClick={() => {
-                                                    setSelectedData(item.geometry);
-                                                    setIsOpen(true);
-                                                }}>
-                                                    <MapTrifold size={20} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <DataTable
+                                list={list}
+                                resultsPerPage={resultsPerPage}
+                                currentPage={currentPage}
+                                setSelectedData={setSelectedData}
+                                setIsOpen={setIsOpen}
+                            />
                             <Pagination
                                 setCurrentPage={setCurrentPage}
+                                setResultsPerPage={setResultsPerPage}
                                 currentPage={currentPage}
                                 resultsPerPage={resultsPerPage}
                                 listLength={list.length}
@@ -107,7 +61,7 @@ export function Stadiums() {
                     ) : <p>Something else went wrong</p>
                 }
             </main>
-            {selectedData && <MapModal isOpen={isOpen} setIsOpen={setIsOpen} coordinates={selectedData.coordinates} type='stadiums' />}
+            <MapModal isOpen={isOpen} setIsOpen={setIsOpen} data={selectedData} type='stadiums' />
         </>
     )
 }
