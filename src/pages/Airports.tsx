@@ -1,21 +1,32 @@
+import { MapTrifold } from 'phosphor-react';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { MapModal } from '../components/MapModal';
 import { Menu } from '../components/Menu';
+import { Pagination } from '../components/Pagination';
 import { getData } from '../services/getData';
 import styles from './Stadiums.module.css';
 
-interface SpecialProps {
+interface Geometry {
+    type: string;
+    coordinates: number[][][];    
+}
+
+interface AirportProps {
     properties: {
         OBJECTID: number;
         NAME: string;
         OPERSTATUS: string;
         STATE: string;
         COUNTRY: string;
-    }
+    };
+    geometry: Geometry;
 }
 
 export function Airports() {
-    const [list, setList] = useState<SpecialProps[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedData, setSelectedData] = useState<Geometry | undefined>(undefined);
+    const [list, setList] = useState<AirportProps[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(50);
     const { isLoading, isError } = useQuery('getAirports', () => getData(
@@ -64,6 +75,7 @@ export function Airports() {
                                         <td>Name</td>
                                         <td>Operational Status</td>
                                         <td>Location</td>
+                                        <td>View Details</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,60 +88,29 @@ export function Airports() {
                                             <td>{item.properties.NAME}</td>
                                             <td>{item.properties.OPERSTATUS}</td>
                                             <td>{`${item.properties.STATE} - ${item.properties.COUNTRY}`}</td>
+                                            <td>
+                                                <button onClick={() => {
+                                                    setSelectedData(item.geometry);
+                                                    setIsOpen(true);
+                                                }}>
+                                                    <MapTrifold size={20} />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                            <div className={styles.pagination}>
-                                {/* 1. if current page is lower than 10, add reticences after 10th page 
-                                    (1 2 3 [4] 5 6 7 8 9 10 ... last)
-                                    2. if current page > 10 and < total - 10, add reticences to the all previous but the nearest prev and the
-                                    first and all next but the nearest next and the last 
-                                    (1 ... 26 [27] 28 ... last)
-                                    3. if current page > 10 and total > total - 10, add reticences to all previous but the first and the nearest prev and next
-                                    (1 ... 44 [45] 46)                                     
-                                    */
-                                    Array.from(Array(Math.ceil(list.length / resultsPerPage)).keys()).map((item, index) => (
-                                        (currentPage >= 9 && currentPage < Math.ceil(list.length / resultsPerPage) - 8) ? //first case
-                                            (index === 0 || //first
-                                             index + 2 === currentPage || //next
-                                             index === currentPage || // previous
-                                             index + 1 === currentPage || // active
-                                             index === (Math.ceil(list.length / resultsPerPage) - 1)) // last 
-                                             ? (
-                                                <span 
-                                                    className={index + 1 === currentPage ? styles.active : undefined}
-                                                    onClick={() => setCurrentPage(index + 1)}
-                                                >
-                                                    {item + 1}
-                                                </span>
-                                            ) : (index === currentPage - 3 || index === currentPage + 3) ? <span>...</span> : <></>
-                                        : (currentPage < 9 ) ?  //second case
-                                            (index < 10 || index === Math.ceil(list.length / resultsPerPage) - 1) ? (
-                                                <span 
-                                                    className={index + 1 === currentPage ? styles.active : undefined}
-                                                    onClick={() => setCurrentPage(index + 1)}
-                                                >
-                                                    {item + 1}
-                                                </span>
-                                            ) : (index === 11) ? <span>...</span> : <></>
-                                        : (currentPage >= Math.ceil(list.length / resultsPerPage) - 12) ? // third case
-                                            (index === 0 || index > Math.ceil(list.length / resultsPerPage) - 11) ? (
-                                                <span 
-                                                    className={index + 1 === currentPage ? styles.active : undefined}
-                                                    onClick={() => setCurrentPage(index + 1)}
-                                                >
-                                                    {item + 1}
-                                                </span>
-                                            ) : (index === 1) ? <span>...</span> : <></>
-                                        : <></>
-                                    ))
-                                }
-                            </div>
+                        <Pagination
+                            setCurrentPage={setCurrentPage}
+                            currentPage={currentPage}
+                            resultsPerPage={resultsPerPage}
+                            listLength={list.length}
+                        />
                         </>
                     ) : <p>Something else went wrong</p>
                 }
             </main>
+            {selectedData && <MapModal isOpen={isOpen} setIsOpen={setIsOpen} coordinates={selectedData?.coordinates} type='airports' />}
         </>
     )
 }

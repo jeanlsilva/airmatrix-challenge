@@ -1,8 +1,16 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { MapTrifold } from 'phosphor-react';
 import { Menu } from '../components/Menu';
+import { Pagination } from '../components/Pagination';
 import { getData } from '../services/getData';
 import styles from './Stadiums.module.css';
+import { MapModal } from '../components/MapModal';
+
+interface Geometry {
+    type: string;
+    coordinates: number[];
+}
 
 interface DataProps {
     properties: {
@@ -11,10 +19,13 @@ interface DataProps {
         STATUS_CODE: string;
         CITY: string;
         STATE: string;
-    }
+    };
+    geometry: Geometry;
 }
 
 export function Stadiums() {
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedData, setSelectedData] = useState<Geometry | undefined>(undefined);
     const [list, setList] = useState<DataProps[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(50);
@@ -64,6 +75,7 @@ export function Stadiums() {
                                         <td>Name</td>
                                         <td>Status</td>
                                         <td>Location</td>
+                                        <td>View Details</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -73,56 +85,29 @@ export function Stadiums() {
                                             <td>{item.properties.NAME}</td>
                                             <td>{item.properties.STATUS_CODE}</td>
                                             <td>{`${item.properties.CITY}, ${item.properties.STATE}`}</td>
+                                            <td>
+                                                <button onClick={() => {
+                                                    setSelectedData(item.geometry);
+                                                    setIsOpen(true);
+                                                }}>
+                                                    <MapTrifold size={20} />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
-                            <div className={styles.pagination}>
-                                {Array.from(Array(Math.ceil(list.length / resultsPerPage)).keys()).map((item, index) => (
-                                    (currentPage >= 9 && currentPage < Math.ceil(list.length / resultsPerPage) - 8) ? //first case
-                                        (index === 0 || //first
-                                            index + 2 === currentPage || //next
-                                            index === currentPage || // previous
-                                            index + 1 === currentPage || // active
-                                            index === (Math.ceil(list.length / resultsPerPage) - 1)) // last 
-                                            ? (
-                                            <span 
-                                                className={index + 1 === currentPage ? styles.active : undefined}
-                                                onClick={() => setCurrentPage(index + 1)}
-                                            >
-                                                {item + 1}
-                                            </span>
-                                            // ellipsis before nearest previous and after nearest next
-                                        ) : (index === currentPage - 3 || index === currentPage + 3) ? <span>...</span> : <></>
-                                    : (currentPage < 9 ) ?  //second case
-                                        // first 10 or the last
-                                        (index < 10 || index === Math.ceil(list.length / resultsPerPage) - 1) ? (
-                                            <span 
-                                                className={index + 1 === currentPage ? styles.active : undefined}
-                                                onClick={() => setCurrentPage(index + 1)}
-                                            >
-                                                {item + 1}
-                                            </span>
-                                            // ellipsis after the 10th
-                                        ) : (index === 11) ? <span>...</span> : <></>
-                                    : (currentPage >= Math.ceil(list.length / resultsPerPage) - 12) ? // third case
-                                        // first or the last 10
-                                        (index === 0 || index > Math.ceil(list.length / resultsPerPage) - 11) ? (
-                                            <span 
-                                                className={index + 1 === currentPage ? styles.active : undefined}
-                                                onClick={() => setCurrentPage(index + 1)}
-                                            >
-                                                {item + 1}
-                                            </span>
-                                            // ellipsis after the first
-                                        ) : (index === 1) ? <span>...</span> : <></>
-                                    : <></>
-                                ))}
-                            </div>
+                            <Pagination
+                                setCurrentPage={setCurrentPage}
+                                currentPage={currentPage}
+                                resultsPerPage={resultsPerPage}
+                                listLength={list.length}
+                            />
                         </>
                     ) : <p>Something else went wrong</p>
                 }
             </main>
+            {selectedData && <MapModal isOpen={isOpen} setIsOpen={setIsOpen} coordinates={selectedData.coordinates} type='stadiums' />}
         </>
     )
 }
