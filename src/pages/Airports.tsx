@@ -24,8 +24,6 @@ export function Airports() {
         cacheTime: 60000
     });
 
-
-
     return (
         <>
             <Menu page='airports' />
@@ -43,6 +41,7 @@ export function Airports() {
                                 currentPage={currentPage}
                                 setSelectedData={setSelectedData}
                                 setIsOpen={setIsOpen}
+                                type='airports'
                             />
                             <Pagination
                                 setCurrentPage={setCurrentPage}

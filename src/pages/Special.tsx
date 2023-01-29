@@ -40,6 +40,7 @@ export function Special() {
                                 currentPage={currentPage}
                                 setSelectedData={setSelectedData}
                                 setIsOpen={setIsOpen}
+                                type='special'
                             />
                             <Pagination
                                 setCurrentPage={setCurrentPage}

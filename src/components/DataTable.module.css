@@ -4,6 +4,10 @@
     align-items: center;
 }
 
+.dataTable .small {
+    font-size: .75rem;
+}
+
 .dataTable table {
     width: 100%;
     margin: 20px 0;
@@ -15,6 +19,7 @@
 .dataTable td {
     border: .3px solid var(--gray-500);
     height: 40px;
+    max-width: 300px;
     text-align: center;
 }
 

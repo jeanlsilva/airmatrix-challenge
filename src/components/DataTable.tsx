@@ -2,7 +2,7 @@ import { MapTrifold } from "phosphor-react";
 import styles from './DataTable.module.css';
 
 interface Geometry {
-    type: 'MultiPolygon';
+    type: string;
     coordinates: any;
 }
 
@@ -29,6 +29,7 @@ interface DataTableProps {
     currentPage: number;
     setSelectedData: React.Dispatch<React.SetStateAction<DataProps | undefined>>;
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    type: 'airports' | 'stadiums' | 'special';
 }
 
 export function DataTable({ 
@@ -36,7 +37,8 @@ export function DataTable({
     resultsPerPage, 
     currentPage, 
     setSelectedData, 
-    setIsOpen, 
+    setIsOpen,
+    type
 }: DataTableProps) {
 
     return (
@@ -67,9 +69,9 @@ export function DataTable({
                                     (item.properties.OPERSTATUS && item.properties.OPERSTATUS === 'OPERATIONAL') || 
                                     (item.properties.STATUS_CODE && item.properties.STATUS_CODE === 'Open') ? 
                                         styles.statusGreen : 
-                                    item.properties.TIMESOFUSE ? undefined : styles.statusRed
+                                    item.properties.TIMESOFUSE ? styles.small : styles.statusRed
                                 }>{item.properties?.OPERSTATUS || item.properties?.STATUS_CODE || item.properties?.TIMESOFUSE}</td>
-                                <td>{`${item.properties?.CITY ? item.properties.CITY + ',' : ''} 
+                                <td className={type === 'special' ? styles.small : undefined}>{`${item.properties?.CITY ? item.properties.CITY + ',' : ''} 
                                     ${item.properties.STATE}
                                     ${item.properties?.COUNTRY ? ' - ' + item.properties.COUNTRY : ''}`}</td>
                                 <td>

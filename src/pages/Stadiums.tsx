@@ -49,6 +49,7 @@ export function Stadiums() {
                                 currentPage={currentPage}
                                 setSelectedData={setSelectedData}
                                 setIsOpen={setIsOpen}
+                                type='stadiums'
                             />
                             <Pagination
                                 setCurrentPage={setCurrentPage}
