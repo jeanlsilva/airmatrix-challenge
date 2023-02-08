@@ -1,3 +1,4 @@
+import React from 'react';
 import { MapTrifold } from "phosphor-react";
 import styles from './DataTable.module.css';
 
