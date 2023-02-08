@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import { DataProps, DataTable } from '../components/DataTable';
 import { MapModal } from '../components/MapModal';
 import { Menu } from '../components/Menu';
 import { Pagination } from '../components/Pagination';
 import { getData } from '../services/getData';
-import styles from './Stadiums.module.css';
 
 export function Airports() {
     const [isOpen, setIsOpen] = useState(false);

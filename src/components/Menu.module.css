@@ -2,7 +2,9 @@
     background: var(--gray-300);
     width: 100%;
     height: 100px;
-    display: flex;    
+    display: flex; 
+    padding: 15px;
+    align-items: center;   
 }
 
 .header {
@@ -11,16 +13,23 @@
     align-items: center;
     width: 100%;
     max-width: 1280px;
-    margin: 0 auto;
+    margin: 0 auto;    
 }
 
 .headerHome {
     display: flex;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     flex-direction: column;
     justify-content: center;
-    align-items: center;    
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.header >div {
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
 }
 
 div >a {
@@ -42,4 +51,50 @@ div >a {
 
 div >a:not(.active):hover {
     color: var(--purple-500);
+}
+
+.header >.open {
+    display: none;
+}
+
+.navbar {
+    display: none;
+}
+
+@media (max-width: 720px) {
+    .headerHome >a {
+        font-size: 2rem;
+    }
+
+    .headerHome {
+        gap: 40px;
+    }
+
+    .navbar {
+        display: block;
+    }
+
+    .navbar button {
+        border: 0;
+        background: transparent;
+    }
+
+    .header >div {
+        visibility: hidden;
+    }
+
+    .header >.open {
+        display: flex;
+        visibility: visible;
+        flex-direction: column;
+        margin-top: 170px;
+        align-items: center;
+        background: var(--gray-300);
+        position: relative;
+        z-index:1;
+    }
+
+    .header >.open a {
+        font-size: 1.5rem;
+    }
 }

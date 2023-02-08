@@ -29,3 +29,15 @@
 .resultsPerPage select {
     margin: 0 5px;
 }
+
+@media (max-width: 720px) {
+    .wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .pagination span {
+        margin: 0 10px;
+    }
+}

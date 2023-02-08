@@ -1,4 +1,4 @@
-import { useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import Modal from 'react-modal';
 import Map, {Source, Layer, Marker } from 'react-map-gl';
 import { ArrowArcLeft } from 'phosphor-react';
@@ -13,27 +13,13 @@ interface ModalProps {
     type: 'airports' | 'stadiums' | 'special';
 }
 
-const customStyles: Modal.Styles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      background: 'var(--gray-500)',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center'
-    },
-};
-
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiamVhbmxzaWx2YSIsImEiOiJjbGRkNzFhZXYwMHI1M3Bud2g2MXZmYzNnIn0.Nf8ztLzXZ4t60QgMzeW1zQ';
 
 export function MapModal({ isOpen, setIsOpen, data, type }: ModalProps) {
+    console.log(data);
     const [zoom, setZoom] = useState(14);
     let center: DataProps | undefined = undefined;
-    if (data && data.geometry.type === 'Polygon') {
+    if (data && data.geometry?.type === 'Polygon') {
         const features = turf.points(data.geometry.coordinates[0]);
         center = turf.center(features);
     }
@@ -45,7 +31,7 @@ export function MapModal({ isOpen, setIsOpen, data, type }: ModalProps) {
     
     return (
         data ? (
-            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} style={customStyles} ariaHideApp={false}>
+            <Modal isOpen={isOpen} onRequestClose={() => setIsOpen(false)} ariaHideApp={false} className={styles.modal}>
                 <div className={styles.top}>                    
                     <div className={styles.left}>
                         <ArrowArcLeft onClick={() => setIsOpen(false)} size={30} />
